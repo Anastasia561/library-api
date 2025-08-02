@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: resource-server
+
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 55MB
+
+  config:
+    import: optional:file:.env[.properties]
+
+  datasource:
+    url: ${DB_URL_AWS}
+    username: ${DB_USERNAME_AWS}
+    password: ${DB_PASSWORD_AWS}
