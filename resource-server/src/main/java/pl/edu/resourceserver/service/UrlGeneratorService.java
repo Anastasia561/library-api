@@ -11,7 +11,7 @@ import java.time.Duration;
 
 @Service
 public class UrlGeneratorService {
-    S3Presigner s3Presigner;
+    private final S3Presigner s3Presigner;
 
     @Value("${AWS_S3_BUCKET}")
     private String bucketName;

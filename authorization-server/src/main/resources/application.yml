@@ -7,6 +7,9 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+
   config:
     import: optional:file:.env[.properties]
 
