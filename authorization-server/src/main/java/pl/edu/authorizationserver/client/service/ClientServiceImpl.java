@@ -40,7 +40,7 @@ class ClientServiceImpl implements ClientService {
 
     @Override
     public Client findByClientId(String clientId) {
-        return clientRepository.findById(clientId)
+        return clientRepository.findByIdClient(clientId)
                 .orElseThrow(() -> new EntityNotFoundException("Client not found"));
     }
 }
