@@ -2,6 +2,8 @@ package pl.edu.authorizationserver.client.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
+import pl.edu.authorizationserver.client.model.AuthMethod;
+import pl.edu.authorizationserver.client.model.GrantType;
 import pl.edu.authorizationserver.validation.annotation.UniqueClientId;
 
 import java.util.Set;
@@ -17,10 +19,10 @@ public record ClientRegisterDto(
         String secret,
 
         @Size(min = 1, message = "must provide at leas one authentication method")
-        Set<String> authMethods,
+        Set<AuthMethod> authMethods,
 
         @Size(min = 1, message = "must provide at leas one grant type")
-        Set<String> grantTypes,
+        Set<GrantType> grantTypes,
 
         @Size(min = 1, message = "must provide at least one scope")
         Set<String> scopes,

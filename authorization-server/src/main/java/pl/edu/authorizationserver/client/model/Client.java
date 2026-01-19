@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -15,25 +14,26 @@ public class Client {
     private String id;
     private String idClient;
     private String secret;
-    @ManyToMany
-    @JoinTable(name = "client_auth_method",
-            joinColumns = @JoinColumn(name = "client_id"),
-            inverseJoinColumns = @JoinColumn(name = "auth_method_id"))
-    private Set<AuthMethod> authMethods = new HashSet<>();
 
-    @ManyToMany
-    @JoinTable(name = "client_grant_type",
-            joinColumns = @JoinColumn(name = "client_id"),
-            inverseJoinColumns = @JoinColumn(name = "grant_type_id"))
-    private Set<GrantType> grantTypes = new HashSet<>();
+    @ElementCollection(targetClass = AuthMethod.class)
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(name = "client_auth_methods", joinColumns = @JoinColumn(name = "client_id"))
+    @Column(name = "auth_method")
+    private Set<AuthMethod> authMethods;
+
+    @ElementCollection(targetClass = GrantType.class)
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(name = "client_grant_types", joinColumns = @JoinColumn(name = "client_id"))
+    @Column(name = "grant_type")
+    private Set<GrantType> grantTypes;
 
     @ManyToMany
     @JoinTable(name = "client_scope",
             joinColumns = @JoinColumn(name = "client_id"),
             inverseJoinColumns = @JoinColumn(name = "scope_id"))
-    private Set<Scope> scopes = new HashSet<>();
+    private Set<Scope> scopes;
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
-    private Set<RedirectUri> redirectUris = new HashSet<>();
+    private Set<RedirectUri> redirectUris;
 
 }

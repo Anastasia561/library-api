@@ -25,4 +25,10 @@ public class GlobalExceptionHandler {
     public Map<String, String> handleEntityNotFound(EntityNotFoundException ex) {
         return Map.of("error", ex.getMessage());
     }
+
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(Exception.class)
+    public Map<String, String> handleEntityNotFound(Exception ex) {
+        return Map.of("error", "Internal Server Error");
+    }
 }

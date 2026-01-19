@@ -16,5 +16,5 @@ public class Scope {
     private int id;
     private String name;
     @ManyToMany(mappedBy = "scopes")
-    private Set<Client> clients = new HashSet<>();
+    private Set<Client> clients;
 }
