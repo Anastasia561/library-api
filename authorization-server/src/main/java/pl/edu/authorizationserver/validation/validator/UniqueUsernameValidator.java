@@ -2,7 +2,7 @@ package pl.edu.authorizationserver.validation.validator;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import pl.edu.authorizationserver.repository.UserRepository;
+import pl.edu.authorizationserver.user.repository.UserRepository;
 import pl.edu.authorizationserver.validation.annotation.UniqueUsername;
 
 public class UniqueUsernameValidator implements ConstraintValidator<UniqueUsername, String> {

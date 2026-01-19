@@ -2,7 +2,7 @@ package pl.edu.authorizationserver.validation.validator;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import pl.edu.authorizationserver.repository.ClientRepository;
+import pl.edu.authorizationserver.client.repository.ClientRepository;
 import pl.edu.authorizationserver.validation.annotation.UniqueClientId;
 
 public class UniqueClientIdValidator implements ConstraintValidator<UniqueClientId, String> {

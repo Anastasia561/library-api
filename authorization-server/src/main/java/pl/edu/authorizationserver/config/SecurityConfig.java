@@ -10,10 +10,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
@@ -56,11 +56,11 @@ public class SecurityConfig {
     public SecurityFilterChain appSecurityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/register", "/register-client").permitAll()
+                        .requestMatchers("/user/register", "/client/register").permitAll()
                         .anyRequest().authenticated()
                 )
                 .csrf(csrf ->
-                        csrf.ignoringRequestMatchers("/register", "/register-client"))
+                        csrf.ignoringRequestMatchers("/user/register", "/client/register"))
                 .formLogin(withDefaults());
 
         return http.build();
