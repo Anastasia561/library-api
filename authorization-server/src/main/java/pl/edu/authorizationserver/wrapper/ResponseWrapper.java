@@ -27,4 +27,12 @@ public class ResponseWrapper<T> {
         wrapper.setStatusCode(status.value());
         return wrapper;
     }
+
+    public static <T> ResponseWrapper<T> withStatus(HttpStatus status, T data) {
+        ResponseWrapper<T> wrapper = new ResponseWrapper<>();
+        wrapper.setData(data);
+        wrapper.setStatus(status.name());
+        wrapper.setStatusCode(status.value());
+        return wrapper;
+    }
 }

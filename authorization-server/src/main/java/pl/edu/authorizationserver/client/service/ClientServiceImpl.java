@@ -21,7 +21,7 @@ class ClientServiceImpl implements ClientService {
 
     @Override
     @Transactional
-    public void save(ClientRegisterDto dto) {
+    public String save(ClientRegisterDto dto) {
         Client client = clientMapper.toClient(dto);
 
         client.setScopes(dto.scopes().stream().map(
@@ -29,7 +29,7 @@ class ClientServiceImpl implements ClientService {
                         .orElseThrow(() -> new EntityNotFoundException("Scope not found"))
         ).collect(Collectors.toSet()));
 
-        clientRepository.save(client);
+        return clientRepository.save(client).getId();
     }
 
     @Override

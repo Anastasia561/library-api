@@ -4,7 +4,7 @@ import pl.edu.authorizationserver.client.dto.ClientRegisterDto;
 import pl.edu.authorizationserver.client.model.Client;
 
 public interface ClientService {
-    void save(ClientRegisterDto dto);
+    String save(ClientRegisterDto dto);
 
     Client findById(String id);
 

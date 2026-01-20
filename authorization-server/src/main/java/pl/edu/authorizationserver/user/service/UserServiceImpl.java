@@ -17,8 +17,8 @@ class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public void registerUser(UserRegisterDto dto) {
+    public Integer registerUser(UserRegisterDto dto) {
         String encodedPass = passwordEncoder.encode(dto.password());
-        userRepository.save(userMapper.toUser(dto, encodedPass));
+        return userRepository.save(userMapper.toUser(dto, encodedPass)).getId();
     }
 }
