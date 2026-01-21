@@ -27,7 +27,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class ClientServiceImplTest {
+class ClientServiceImplTest {
     @Mock
     private ClientRepository clientRepository;
     @Mock
