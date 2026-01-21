@@ -12,6 +12,8 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import pl.edu.authorizationserver.wrapper.ResponseWrapper;
 
+import java.util.stream.Collectors;
+
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -35,9 +37,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         String message = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
-                .findFirst()
                 .map(err -> err.getField() + ": " + err.getDefaultMessage())
-                .orElse("Validation error");
+                .collect(Collectors.joining(","));
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ResponseWrapper.withError(HttpStatus.BAD_REQUEST, message));

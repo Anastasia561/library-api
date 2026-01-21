@@ -18,16 +18,20 @@ public record ClientRegisterDto(
         @NotEmpty(message = "client secret can not be empty")
         String secret,
 
-        @Size(min = 1, message = "must provide at leas one authentication method")
+        @NotEmpty(message = "must provide at least one authentication method")
+        @Size(min = 1)
         Set<AuthMethod> authMethods,
 
-        @Size(min = 1, message = "must provide at leas one grant type")
+        @NotEmpty(message = "must provide at least one grant type")
+        @Size(min = 1)
         Set<GrantType> grantTypes,
 
-        @Size(min = 1, message = "must provide at least one scope")
+        @NotEmpty(message = "must provide at least one scope")
+        @Size(min = 1)
         Set<String> scopes,
 
-        @Size(min = 1, message = "must provide at least one redirect uri")
+        @NotEmpty(message = "must provide at least one redirect uri")
+        @Size(min = 1)
         Set<String> redirectUris
 ) {
 }

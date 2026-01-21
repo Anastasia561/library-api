@@ -1,0 +1,12 @@
+testcontainers:
+  reuse.enable: true
+  mysql:
+    image: mysql:8.0.33
+    username: ${TEST_USER}
+    password: ${TEST_PASSWORD}
+    database: ${TEST_DB}
+
+spring:
+  sql:
+    init:
+      mode: always

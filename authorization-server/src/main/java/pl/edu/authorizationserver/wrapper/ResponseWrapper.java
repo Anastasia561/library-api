@@ -12,14 +12,6 @@ public class ResponseWrapper<T> {
     private String status;
     private int statusCode;
 
-    public static <T> ResponseWrapper<T> ok(T data) {
-        ResponseWrapper<T> wrapper = new ResponseWrapper<>();
-        wrapper.setData(data);
-        wrapper.setStatus(HttpStatus.OK.name());
-        wrapper.setStatusCode(HttpStatus.OK.value());
-        return wrapper;
-    }
-
     public static <T> ResponseWrapper<T> withError(HttpStatus status, String message) {
         ResponseWrapper<T> wrapper = new ResponseWrapper<>();
         wrapper.setError(message);
