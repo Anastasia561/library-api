@@ -1,7 +1,6 @@
 package pl.edu.authorizationserver.client.service;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.edu.authorizationserver.client.dto.ClientRegisterDto;
@@ -20,7 +19,6 @@ class ClientServiceImpl implements ClientService {
     private final ClientMapper clientMapper;
 
     @Override
-    @Transactional
     public String save(ClientRegisterDto dto) {
         Client client = clientMapper.toClient(dto);
 

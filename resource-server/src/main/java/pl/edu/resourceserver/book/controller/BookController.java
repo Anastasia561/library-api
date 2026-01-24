@@ -1,11 +1,20 @@
 package pl.edu.resourceserver.book.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import pl.edu.resourceserver.book.dto.BookFullViewResponseDto;
 import pl.edu.resourceserver.book.dto.BookPreviewResponseDto;
+import pl.edu.resourceserver.book.dto.BookUploadRequestDto;
 import pl.edu.resourceserver.book.service.contract.BookService;
 
 import java.net.URL;
@@ -39,25 +48,25 @@ public class BookController {
         return bookService.getBookDownloadUrl(isbn, false);
     }
 
-    //    @PreAuthorize("hasRole('LIBRARIAN')")
-//    @GetMapping("/info")
-//    public List<BookFullViewResponseDto> getBooksInfo() {
-//        return bookService.getAllBooksForLibrarian().stream().toList();
-//    }
-//
-//    @PreAuthorize("hasRole('LIBRARIAN')")
-//    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-//    public ResponseEntity<String> uploadBook(@ModelAttribute @Valid BookUploadRequestDto dto) {
-//        bookService.saveBook(dto);
-//        return ResponseEntity.ok().build();
-//    }
-//
-//    @PreAuthorize("hasRole('LIBRARIAN')")
-//    @DeleteMapping("/{isbn}")
-//    public ResponseEntity<String> deleteBook(@PathVariable String isbn) {
-//        bookService.deleteBookByIsbn(isbn);
-//        return ResponseEntity.noContent().build();
-//    }
+    //        @PreAuthorize("hasRole('LIBRARIAN')")
+    @GetMapping("/info")
+    public List<BookFullViewResponseDto> getBooksInfo() {
+        return bookService.getAllBooksFullView();
+    }
+
+    //LIBRARIAN
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void uploadBook(@ModelAttribute @Valid BookUploadRequestDto dto) {
+        bookService.saveBook(dto);
+    }
+
+    //librarian
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{isbn}")
+    public void deleteBook(@PathVariable(name = "isbn") String isbn) {
+        bookService.deleteBookByIsbn(isbn);
+    }
 //
 //    @PreAuthorize("hasRole('LIBRARIAN')")
 //    @PatchMapping(path = "/{isbn}/update")

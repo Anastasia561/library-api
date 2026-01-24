@@ -11,8 +11,8 @@ import pl.edu.authorizationserver.client.model.Client;
 import pl.edu.authorizationserver.client.dto.ClientRegisterDto;
 import pl.edu.authorizationserver.client.model.GrantType;
 import pl.edu.authorizationserver.client.model.RedirectUri;
-import pl.edu.authorizationserver.client.model.Scope;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -20,6 +20,18 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class ClientMapper {
+    private static final Map<GrantType, AuthorizationGrantType> grantTypeMap = Map.of(
+            GrantType.AUTHORIZATION_CODE, AuthorizationGrantType.AUTHORIZATION_CODE,
+            GrantType.REFRESH_TOKEN, AuthorizationGrantType.REFRESH_TOKEN,
+            GrantType.CLIENT_CREDENTIALS, AuthorizationGrantType.CLIENT_CREDENTIALS
+    );
+
+    private static final Map<AuthMethod, ClientAuthenticationMethod> authMethodMap = Map.of(
+            AuthMethod.CLIENT_SECRET_BASIC, ClientAuthenticationMethod.CLIENT_SECRET_BASIC,
+            AuthMethod.CLIENT_SECRET_POST, ClientAuthenticationMethod.CLIENT_SECRET_POST,
+            AuthMethod.NONE, ClientAuthenticationMethod.NONE
+    );
+
     private final PasswordEncoder passwordEncoder;
 
     public ClientRegisterDto toClientRegisterDto(RegisteredClient registeredClient) {
@@ -71,26 +83,21 @@ public class ClientMapper {
     public RegisteredClient toRegisteredClientFromClient(Client client) {
         if (client == null) return null;
 
-        return RegisteredClient.withId(String.valueOf(client.getId()))
+        return RegisteredClient.withId(client.getId())
                 .clientId(client.getIdClient())
                 .clientSecret(client.getSecret())
-                .scopes(scopes -> scopes.addAll(client.getScopes()
-                        .stream()
-                        .map(Scope::getName)
-                        .collect(Collectors.toSet())))
-                .authorizationGrantTypes(types -> types.addAll(client.getGrantTypes()
-                        .stream()
-                        .map(t -> new AuthorizationGrantType(t.name()))
-                        .collect(Collectors.toSet())))
-                .clientAuthenticationMethods(methods -> methods.addAll(client.getAuthMethods()
-                        .stream()
-                        .map(m -> new ClientAuthenticationMethod(m.name()))
-                        .collect(Collectors.toSet())))
-                .redirectUris(redirectUris -> redirectUris.addAll(client.getRedirectUris()
-                        .stream()
-                        .map(RedirectUri::getName)
-                        .collect(Collectors.toSet())))
+
+                .scopes(scopes -> client.getScopes().forEach(s -> scopes.add(s.getName())))
+
+                .authorizationGrantTypes(grants -> client.getGrantTypes()
+                        .forEach(gt -> grants.add(grantTypeMap.get(gt))))
+
+                .clientAuthenticationMethods(methods -> client.getAuthMethods()
+                        .forEach(am -> methods.add(authMethodMap.get(am))))
+
+                .redirectUris(uris -> client.getRedirectUris()
+                        .forEach(r -> uris.add(r.getName())))
+
                 .build();
     }
 }
-

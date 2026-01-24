@@ -119,12 +119,12 @@ class ClientMapperImplTest {
         assertTrue(registeredClient.getScopes().contains("write"));
 
         assertTrue(registeredClient.getAuthorizationGrantTypes()
-                .contains(new AuthorizationGrantType("AUTHORIZATION_CODE")));
+                .contains(AuthorizationGrantType.AUTHORIZATION_CODE));
         assertTrue(registeredClient.getAuthorizationGrantTypes()
-                .contains(new AuthorizationGrantType("REFRESH_TOKEN")));
+                .contains(AuthorizationGrantType.REFRESH_TOKEN));
 
         assertTrue(registeredClient.getClientAuthenticationMethods()
-                .contains(new ClientAuthenticationMethod("CLIENT_SECRET_BASIC")));
+                .contains(ClientAuthenticationMethod.CLIENT_SECRET_BASIC));
 
         assertTrue(registeredClient.getRedirectUris().contains("http://localhost/callback"));
     }
