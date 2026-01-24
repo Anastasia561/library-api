@@ -2,7 +2,7 @@ package pl.edu.resourceserver.validation.validator;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import pl.edu.resourceserver.repository.BookRepository;
+import pl.edu.resourceserver.book.repository.BookRepository;
 import pl.edu.resourceserver.validation.annotation.UniqueIsbn;
 
 public class UniqueIsbnValidator implements ConstraintValidator<UniqueIsbn, String> {
