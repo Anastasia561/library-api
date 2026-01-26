@@ -2,8 +2,9 @@ package pl.edu.resourceserver.book.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.edu.resourceserver.author.service.AuthorService;
 import pl.edu.resourceserver.book.dto.BookUpdateDto;
@@ -18,11 +19,9 @@ import pl.edu.resourceserver.book.service.contract.StorageService;
 import pl.edu.resourceserver.book.service.contract.UrlGeneratorService;
 import pl.edu.resourceserver.genre.service.GenreService;
 import pl.edu.resourceserver.publisher.service.PublisherService;
-import tools.jackson.databind.ObjectMapper;
 
 import java.net.URL;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -34,15 +33,15 @@ class BookServiceImpl implements BookService {
     private final PublisherService publisherService;
     private final GenreService genreService;
     private final AuthorService authorService;
-    private final ObjectMapper objectMapper;
-    private final Validator validator;
 
     @Override
-    public List<BookPreviewResponseDto> getAllPreview() {
-        return bookRepository.findAll().stream()
+    public Page<BookPreviewResponseDto> getAllPreview(Pageable pageable) {
+        return bookRepository.findAll(pageable)
                 .map(bookMapper::toBookPreviewResponseDto)
-                .peek(b -> b.setCoverImage(urlGeneratorService.generateBookCoverURL(b.getIsbn())))
-                .collect(Collectors.toList());
+                .map(dto -> {
+                    dto.setCoverImage(urlGeneratorService.generateBookCoverURL(dto.getIsbn()));
+                    return dto;
+                });
     }
 
     @Override
@@ -55,15 +54,15 @@ class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookFullViewResponseDto> getAllFullView() {
-        return bookRepository.findAll().stream()
+    public Page<BookFullViewResponseDto> getAllFullView(Pageable pageable) {
+        return bookRepository.findAll(pageable)
                 .map(bookMapper::toBookFullViewResponseDto)
-                .peek(b -> {
+                .map(b -> {
                     b.setCoverImage(urlGeneratorService.generateBookCoverURL(b.getIsbn()));
                     b.setFullBookDocument(urlGeneratorService.generateBookURL(b.getIsbn(), true));
                     b.setPreviewBookDocument(urlGeneratorService.generateBookURL(b.getIsbn(), false));
-                })
-                .collect(Collectors.toList());
+                    return b;
+                });
     }
 
     @Override

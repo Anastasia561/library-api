@@ -1,49 +1,52 @@
 package pl.edu.resourceserver.exception;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.ConstraintViolationException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import pl.edu.resourceserver.wrapper.ResponseWrapper;
 
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({EntityNotFoundException.class, InvalidFileInputException.class, FolderNotFoundException.class})
-    public ResponseEntity<String> handleException(RuntimeException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handle(MethodArgumentNotValidException ex) {
-        return ex.getBindingResult().getFieldErrors().stream()
-                .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
+    public ResponseEntity<Object> handleException(RuntimeException e) {
+        return buildError(HttpStatus.NOT_FOUND, e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handleGeneric(Exception ex) {
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Internal Server Error");
+    public ResponseEntity<Object> handleGenericException(Exception ex) {
+        return buildError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(ConstraintViolationException.class)
-    public Map<String, String> handleConstraintViolationException(ConstraintViolationException ex) {
-        return ex.getConstraintViolations().stream()
-                .collect(Collectors.toMap(
-                        violation -> {
-                            return violation.getPropertyPath().toString();
-                        },
-                        violation -> violation.getMessage()
-                ));
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException ex) {
+        return buildError(HttpStatus.UNAUTHORIZED, ex.getMessage());
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+                                                                  HttpHeaders headers, HttpStatusCode status,
+                                                                  WebRequest request) {
+        String message = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(err -> err.getField() + ": " + err.getDefaultMessage())
+                .collect(Collectors.joining(","));
+
+        return buildError(HttpStatus.BAD_REQUEST, message);
+    }
+
+    private ResponseEntity<Object> buildError(HttpStatus status, String message) {
+        return ResponseEntity.status(status).body(ResponseWrapper.withError(status, message));
     }
 }

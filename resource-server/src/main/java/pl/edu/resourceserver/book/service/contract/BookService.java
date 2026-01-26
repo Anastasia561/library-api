@@ -1,19 +1,20 @@
 package pl.edu.resourceserver.book.service.contract;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import pl.edu.resourceserver.book.dto.BookFullViewResponseDto;
 import pl.edu.resourceserver.book.dto.BookUpdateDto;
 import pl.edu.resourceserver.book.dto.BookUploadRequestDto;
 import pl.edu.resourceserver.book.dto.BookPreviewResponseDto;
 
 import java.net.URL;
-import java.util.List;
 
 public interface BookService {
-    List<BookPreviewResponseDto> getAllPreview();
+    Page<BookPreviewResponseDto> getAllPreview(Pageable pageable);
 
     BookPreviewResponseDto getByIsbn(String isbn);
 
-    List<BookFullViewResponseDto> getAllFullView();
+    Page<BookFullViewResponseDto> getAllFullView(Pageable pageable);
 
     URL getDownloadUrl(String isbn, boolean isFull);
 
