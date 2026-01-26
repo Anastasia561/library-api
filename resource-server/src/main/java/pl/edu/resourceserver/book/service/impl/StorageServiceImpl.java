@@ -38,7 +38,7 @@ class StorageServiceImpl implements StorageService {
                 s3.putObject(putObjectRequest, RequestBody.fromBytes(file.getBytes()));
 
             } catch (IOException e) {
-                throw new RuntimeException("Failed to upload file to S3: " + file.getOriginalFilename(), e);
+                throw new RuntimeException("Failed to upload file to S3: " + file.getOriginalFilename());
             }
         }
     }

@@ -3,23 +3,23 @@ package pl.edu.resourceserver.exception;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import pl.edu.resourceserver.wrapper.FieldValidationError;
 import pl.edu.resourceserver.wrapper.ResponseWrapper;
 
-import java.util.stream.Collectors;
+import java.util.List;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({EntityNotFoundException.class, InvalidFileInputException.class, FolderNotFoundException.class})
-    public ResponseEntity<Object> handleException(RuntimeException e) {
+    public ResponseEntity<Object> handleNotFoundException(RuntimeException e) {
         return buildError(HttpStatus.NOT_FOUND, e.getMessage());
     }
 
@@ -35,15 +35,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-                                                                  HttpHeaders headers, HttpStatusCode status,
-                                                                  WebRequest request) {
-        String message = ex.getBindingResult()
-                .getFieldErrors()
-                .stream()
-                .map(err -> err.getField() + ": " + err.getDefaultMessage())
-                .collect(Collectors.joining(","));
+                                                                  HttpHeaders headers, org.springframework.http.HttpStatusCode status,
+                                                                  org.springframework.web.context.request.WebRequest request) {
 
-        return buildError(HttpStatus.BAD_REQUEST, message);
+        List<FieldValidationError> validationErrors = ex.getBindingResult().getAllErrors()
+                .stream().map(error -> {
+                    if (error instanceof FieldError fe) {
+                        return new FieldValidationError(fe.getField(), fe.getDefaultMessage());
+                    }
+                    return new FieldValidationError(error.getObjectName(), error.getDefaultMessage());
+                }).toList();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ResponseWrapper.withValidationError(HttpStatus.BAD_REQUEST, "Validation failed", validationErrors));
     }
 
     private ResponseEntity<Object> buildError(HttpStatus status, String message) {
