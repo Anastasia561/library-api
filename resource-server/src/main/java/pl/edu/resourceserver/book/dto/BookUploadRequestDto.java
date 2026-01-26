@@ -31,13 +31,13 @@ public record BookUploadRequestDto(
         @Min(0)
         Integer pages,
 
-        @NotBlank(message = "Author full name is required")
-        String author,
+        @NotNull(message = "Author is required")
+        Integer author,
 
-        @NotBlank(message = "Publisher name is required")
-        String publisher,
+        @NotNull(message = "Publisher is required")
+        Integer publisher,
 
-        @NotBlank(message = "Genre name is required")
-        String genre
+        @NotNull(message = "Genre is required")
+        Integer genre
 ) {
 }

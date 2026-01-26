@@ -28,12 +28,12 @@ public class Book {
     private int publicationYear;
     private Integer pages;
     @ManyToOne
-    @JoinColumn(name = "author_id")
+    @JoinColumn(name = "author_id", nullable = false)
     private Author author;
     @ManyToOne
-    @JoinColumn(name = "publisher_id")
+    @JoinColumn(name = "publisher_id", nullable = false)
     private Publisher publisher;
     @ManyToOne
-    @JoinColumn(name = "genre_id")
+    @JoinColumn(name = "genre_id", nullable = false)
     private Genre genre;
 }

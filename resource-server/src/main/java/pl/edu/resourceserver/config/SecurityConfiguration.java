@@ -24,9 +24,11 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+//                .authorizeHttpRequests(auth ->
+//                        auth.requestMatchers("/api/books/**").permitAll()
+//                                .anyRequest().authenticated())
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/api/books/**").permitAll()
-                                .anyRequest().authenticated())
+                                auth.anyRequest().permitAll())
                 .oauth2ResourceServer(oauth2 ->
                         oauth2.jwt(jwt -> jwt
                                 .jwtAuthenticationConverter(new CustomJwtAuthenticationTokenConverter())

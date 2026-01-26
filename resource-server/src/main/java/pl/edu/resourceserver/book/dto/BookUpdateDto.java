@@ -16,13 +16,13 @@ public record BookUpdateDto(
         @NotNull(message = "Pages are required")
         Integer pages,
 
-        @NotBlank(message = "Author is required")
-        String author,
+        @NotNull(message = "Author is required")
+        Integer author,
 
-        @NotBlank(message = "Publisher is required")
-        String publisher,
+        @NotNull(message = "Publisher is required")
+        Integer publisher,
 
-        @NotBlank(message = "Genre is required")
-        String genre
+        @NotNull(message = "Genre is required")
+        Integer genre
 ) {
 }

@@ -28,6 +28,13 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleGeneric(Exception ex) {
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Internal Server Error");
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException.class)
     public Map<String, String> handleConstraintViolationException(ConstraintViolationException ex) {

@@ -16,6 +16,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 class StorageServiceImpl implements StorageService {
+    private static final String BOOK_KEY = "/book.pdf";
+    private static final String COVER_KEY = "/cover";
     private final S3Client s3;
 
     @Value("${AWS_S3_BUCKET}")
@@ -70,9 +72,9 @@ class StorageServiceImpl implements StorageService {
         String key;
 
         if (contentType != null && contentType.startsWith("image/")) {
-            key = folderName + "/cover";
+            key = folderName + COVER_KEY;
         } else if ("application/pdf".equals(contentType)) {
-            key = folderName + "/book.pdf";
+            key = folderName + BOOK_KEY;
         } else {
             throw new IllegalArgumentException("Unsupported file type: " + contentType);
         }
