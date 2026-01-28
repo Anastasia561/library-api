@@ -13,19 +13,9 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
 
-  datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
-
-  cloud:
-    aws:
-      region:
-        static: ${AWS_S3_REGION}
 app:
   aws:
     s3:
-      bucket: ${AWS_S3_BUCKET}
       book-key: "/book.pdf"
       cover-key: "/cover.png"
       preview-key: "/preview.pdf"
