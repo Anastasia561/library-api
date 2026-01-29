@@ -1,10 +1,7 @@
 package pl.edu.resourceserver.book.service.impl;
 
-import io.awspring.cloud.s3.S3Template;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import pl.edu.resourceserver.AbstractIntegrationTest;
@@ -18,23 +15,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class StorageServiceImplIntegrationTest extends AbstractIntegrationTest {
     @Autowired
-    private S3Template s3Template;
-
-    @Autowired
     private StorageServiceImpl storageService;
-
-    @Value("${app.aws.s3.bucket}")
-    private String bucketName;
-
-    @AfterEach
-    protected void cleanup() {
-        s3Template.listObjects(bucketName, "")
-                .forEach(obj -> s3Template.deleteObject(bucketName, obj.getFilename()));
-    }
 
     @Test
     void shouldUploadFilesToS3_whenInputIsValid() {
-        String folderName = "test-folder";
+        String folderName = "new-folder";
         List<MultipartFile> files = List.of(
                 new MockMultipartFile("file1.txt", "file1.txt",
                         "application/pdf", "Hello".getBytes()),
@@ -44,8 +29,8 @@ class StorageServiceImplIntegrationTest extends AbstractIntegrationTest {
 
         storageService.uploadFiles(files, folderName);
 
-        String expectedBookFileName = "test-folder/book.pdf";
-        String expectedImageFileName = "test-folder/cover.png";
+        String expectedBookFileName = folderName + s3Properties.getBookKey();
+        String expectedImageFileName = folderName + s3Properties.getCoverKey();
 
         boolean bookExists = s3Template.listObjects(bucketName, folderName + "/")
                 .stream()
@@ -62,12 +47,6 @@ class StorageServiceImplIntegrationTest extends AbstractIntegrationTest {
     @Test
     void shouldDeleteFolderFromS3_whenFolderExists() {
         String folderName = "test-folder";
-        List<MultipartFile> files = List.of(
-                new MockMultipartFile("book.pdf", "book.pdf",
-                        "application/pdf", "PDF Content".getBytes()));
-
-        storageService.uploadFiles(files, folderName);
-
         storageService.deleteFolder(folderName);
 
         assertTrue(s3Template.listObjects(bucketName, folderName).isEmpty());
