@@ -12,6 +12,8 @@ spring:
 
   jpa:
     database-platform: org.hibernate.dialect.MySQLDialect
+  profiles:
+    active: dev
 
 app:
   aws:

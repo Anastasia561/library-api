@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -16,6 +17,7 @@ import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpMethod.PUT;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -29,13 +31,13 @@ public abstract class AbstractControllerIntegrationTest extends AbstractIntegrat
     protected MockMvc mockMvc;
 
     @Autowired
-    protected EntityManager em;
-
-    @Autowired
     protected ObjectMapper objectMapper;
 
-    protected ResultActions performRequest(HttpMethod method, String url, Object body, Object... uriVars)
-            throws Exception {
+    @Autowired
+    protected EntityManager em;
+
+    protected ResultActions performRequest(HttpMethod method, String url, Object body, String role,
+                                           Object... uriVars) throws Exception {
         MockHttpServletRequestBuilder requestBuilder;
 
         if (method == GET) {
@@ -54,6 +56,12 @@ public abstract class AbstractControllerIntegrationTest extends AbstractIntegrat
             requestBuilder
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(body));
+        }
+
+        if (role != null) {
+            requestBuilder.with(jwt()
+                    .authorities(new SimpleGrantedAuthority("ROLE_" + role))
+            );
         }
 
         return mockMvc.perform(requestBuilder);

@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.edu.resourceserver.AbstractIntegrationTest;
 import pl.edu.resourceserver.exception.FolderNotFoundException;
 
+import java.io.ByteArrayInputStream;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -42,11 +43,17 @@ class StorageServiceImplIntegrationTest extends AbstractIntegrationTest {
 
         assertTrue(bookExists);
         assertTrue(coverExists);
+        storageService.deleteFolder(folderName);
     }
 
     @Test
     void shouldDeleteFolderFromS3_whenFolderExists() {
         String folderName = "test-folder";
+
+        byte[] content = "Test content".getBytes();
+        String fullKey = folderName + s3Properties.getBookKey();
+        s3Template.upload(bucketName, fullKey, new ByteArrayInputStream(content));
+
         storageService.deleteFolder(folderName);
 
         assertTrue(s3Template.listObjects(bucketName, folderName).isEmpty());
