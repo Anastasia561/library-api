@@ -5,11 +5,14 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import pl.edu.authorizationserver.config.TestContainerConfig;
 import tools.jackson.databind.ObjectMapper;
 
 import static org.springframework.http.HttpMethod.DELETE;
@@ -23,8 +26,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @SpringBootTest
 @Transactional
+@ActiveProfiles("test")
+@Import(TestContainerConfig.class)
 @AutoConfigureMockMvc
-public class AbstractControllerIntegrationTest extends AbstractIntegrationTest {
+public abstract class AbstractControllerIntegrationTest {
     @Autowired
     protected MockMvc mockMvc;
 
