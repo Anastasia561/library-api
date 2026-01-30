@@ -22,8 +22,11 @@ import java.util.Set;
 @Entity
 public class Client {
     @Id
+    @Column(name = "id", length = 200, nullable = false)
     private String id;
+    @Column(name = "id_client", length = 50, nullable = false)
     private String idClient;
+    @Column(name = "secret", length = 200)
     private String secret;
 
     @ElementCollection(targetClass = AuthMethod.class)

@@ -66,8 +66,12 @@ public class ClientMapper {
         client.setId(UUID.randomUUID().toString());
         client.setAuthMethods(dto.authMethods());
         client.setGrantTypes(dto.grantTypes());
-        client.setSecret(passwordEncoder.encode(dto.secret()));
         client.setIdClient(dto.idClient());
+        if (dto.secret() != null && !dto.secret().isBlank()) {
+            client.setSecret(passwordEncoder.encode(dto.secret()));
+        } else {
+            client.setSecret(null);
+        }
 
         client.setRedirectUris(dto.redirectUris().stream().map(u ->
                 {
@@ -83,21 +87,30 @@ public class ClientMapper {
     public RegisteredClient toRegisteredClientFromClient(Client client) {
         if (client == null) return null;
 
-        return RegisteredClient.withId(client.getId())
-                .clientId(client.getIdClient())
-                .clientSecret(client.getSecret())
+        RegisteredClient.Builder builder =
+                RegisteredClient.withId(client.getId())
+                        .clientId(client.getIdClient())
 
-                .scopes(scopes -> client.getScopes().forEach(s -> scopes.add(s.getName())))
+                        .scopes(scopes ->
+                                client.getScopes()
+                                        .forEach(s -> scopes.add(s.getName())))
 
-                .authorizationGrantTypes(grants -> client.getGrantTypes()
-                        .forEach(gt -> grants.add(grantTypeMap.get(gt))))
+                        .authorizationGrantTypes(grants ->
+                                client.getGrantTypes()
+                                        .forEach(gt -> grants.add(grantTypeMap.get(gt))))
 
-                .clientAuthenticationMethods(methods -> client.getAuthMethods()
-                        .forEach(am -> methods.add(authMethodMap.get(am))))
+                        .clientAuthenticationMethods(methods ->
+                                client.getAuthMethods()
+                                        .forEach(am -> methods.add(authMethodMap.get(am))))
 
-                .redirectUris(uris -> client.getRedirectUris()
-                        .forEach(r -> uris.add(r.getName())))
+                        .redirectUris(uris ->
+                                client.getRedirectUris()
+                                        .forEach(r -> uris.add(r.getName())));
 
-                .build();
+        if (client.getSecret() != null) {
+            builder.clientSecret(client.getSecret());
+        }
+
+        return builder.build();
     }
 }

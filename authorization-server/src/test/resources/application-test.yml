@@ -10,3 +10,7 @@ spring:
   sql:
     init:
       mode: always
+
+app:
+  security:
+    allowed-origin: ${ALLOWED_ORIGIN}

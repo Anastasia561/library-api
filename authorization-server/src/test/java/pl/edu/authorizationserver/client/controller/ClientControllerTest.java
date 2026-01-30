@@ -52,8 +52,6 @@ public class ClientControllerTest extends AbstractControllerIntegrationTest {
                 .andExpect(jsonPath("$.error")
                         .value(containsString("idClient: client id can not be empty")))
                 .andExpect(jsonPath("$.error")
-                        .value(containsString("secret: client secret can not be empty")))
-                .andExpect(jsonPath("$.error")
                         .value(containsString("authMethods: must provide at least one authentication method")))
                 .andExpect(jsonPath("$.error")
                         .value(containsString("grantTypes: must provide at least one grant type")))

@@ -19,6 +19,7 @@ import org.springframework.security.oauth2.server.authorization.token.JwtEncodin
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -53,8 +54,9 @@ public class SecurityConfig {
 
     @Bean
     @Order(2)
-    public SecurityFilterChain appSecurityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain appSecurityFilterChain(HttpSecurity http, CorsConfigurationSource corsConfigurationSource) throws Exception {
         http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/user/register", "/client/register").permitAll()
                         .anyRequest().authenticated()

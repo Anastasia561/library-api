@@ -14,8 +14,6 @@ public record ClientRegisterDto(
         @NotEmpty(message = "client id can not be empty")
         String idClient,
 
-        @Size(min = 2, max = 50)
-        @NotEmpty(message = "client secret can not be empty")
         String secret,
 
         @NotEmpty(message = "must provide at least one authentication method")
