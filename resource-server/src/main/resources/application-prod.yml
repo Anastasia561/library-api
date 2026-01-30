@@ -1,0 +1,20 @@
+openapi:
+  server-description: Production server
+  resource-server-url: ${RESOURCE_SERVER_URL}
+  auth-server-url: ${AUTH_SERVER_URL}
+
+spring:
+  datasource:
+    url: ${AWS_DB_URL}
+    username: ${AWS_DB_USERNAME}
+    password: ${AWS_DB_PASSWORD}
+
+  cloud:
+    aws:
+      region:
+        static: ${AWS_S3_REGION}
+
+app:
+  aws:
+    s3:
+      bucket: ${AWS_S3_BUCKET}

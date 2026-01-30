@@ -42,7 +42,7 @@ class BookControllerIntegrationTest extends AbstractControllerIntegrationTest {
 
     @Test
     void shouldReturnBooksPage_whenBooksExist() throws Exception {
-        performRequest(HttpMethod.GET, "/api/books?page=0&size=10", null, null)
+        performRequest(HttpMethod.GET, "/books?page=0&size=10", null, null)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.content").isArray())
                 .andExpect(jsonPath("$.data.content.length()").value(1))
@@ -58,7 +58,7 @@ class BookControllerIntegrationTest extends AbstractControllerIntegrationTest {
 
     @Test
     void shouldReturnBookPreviewByIsbn_whenBookExist() throws Exception {
-        performRequest(HttpMethod.GET, "/api/books/{isbn}", null, null, "9780747532699")
+        performRequest(HttpMethod.GET, "/books/{isbn}", null, null, "9780747532699")
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.title").value("Test"))
                 .andExpect(jsonPath("$.data.isbn").value("9780747532699"))
@@ -71,7 +71,7 @@ class BookControllerIntegrationTest extends AbstractControllerIntegrationTest {
 
     @Test
     void shouldReturn404_whenBookNotFound() throws Exception {
-        performRequest(HttpMethod.GET, "/api/books/{isbn}", null, null, "9999999999999")
+        performRequest(HttpMethod.GET, "/books/{isbn}", null, null, "9999999999999")
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error.message").value("Book not found"))
                 .andExpect(jsonPath("$.data").isEmpty())
@@ -81,7 +81,7 @@ class BookControllerIntegrationTest extends AbstractControllerIntegrationTest {
 
     @Test
     void shouldReturn404_whenBookNotFoundForDownloadFull() throws Exception {
-        performRequest(HttpMethod.GET, "/api/books/{isbn}/download/full", null, "USER",
+        performRequest(HttpMethod.GET, "/books/{isbn}/download/full", null, "USER",
                 "9999999999999")
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error.message").value("Book not found"))
@@ -92,7 +92,7 @@ class BookControllerIntegrationTest extends AbstractControllerIntegrationTest {
 
     @Test
     void shouldReturn404_whenBookNotFoundForDownloadPreview() throws Exception {
-        performRequest(HttpMethod.GET, "/api/books/{isbn}/download/preview", null, "USER",
+        performRequest(HttpMethod.GET, "/books/{isbn}/download/preview", null, "USER",
                 "9999999999999")
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error.message").value("Book not found"))
@@ -103,7 +103,7 @@ class BookControllerIntegrationTest extends AbstractControllerIntegrationTest {
 
     @Test
     void shouldReturnFullDownloadURL_whenRequestedAsUser() throws Exception {
-        performRequest(HttpMethod.GET, "/api/books/{isbn}/download/full", null, "USER",
+        performRequest(HttpMethod.GET, "/books/{isbn}/download/full", null, "USER",
                 "9780747532699")
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data").isNotEmpty());
@@ -111,14 +111,14 @@ class BookControllerIntegrationTest extends AbstractControllerIntegrationTest {
 
     @Test
     void shouldReturn401_whenRequestedFullDownloadWithoutAuth() throws Exception {
-        performRequest(HttpMethod.GET, "/api/books/{isbn}/download/full", null, null,
+        performRequest(HttpMethod.GET, "/books/{isbn}/download/full", null, null,
                 "9780747532699")
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     void shouldReturnPreviewDownloadURL_whenRequestedAsUser() throws Exception {
-        performRequest(HttpMethod.GET, "/api/books/{isbn}/download/preview", null, "USER",
+        performRequest(HttpMethod.GET, "/books/{isbn}/download/preview", null, "USER",
                 "9780747532699")
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data").isNotEmpty());
@@ -126,14 +126,14 @@ class BookControllerIntegrationTest extends AbstractControllerIntegrationTest {
 
     @Test
     void shouldReturn401_whenRequestedPreviewDownloadWithoutAuth() throws Exception {
-        performRequest(HttpMethod.GET, "/api/books/{isbn}/download/preview", null, null,
+        performRequest(HttpMethod.GET, "/books/{isbn}/download/preview", null, null,
                 "9780747532699")
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     void shouldReturnBooksInfoPage_whenBooksExist() throws Exception {
-        performRequest(HttpMethod.GET, "/api/books/info?page=0&size=10", null, "LIBRARIAN")
+        performRequest(HttpMethod.GET, "/books/info?page=0&size=10", null, "LIBRARIAN")
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.content").isArray())
                 .andExpect(jsonPath("$.data.content.length()").value(1))
@@ -157,7 +157,7 @@ class BookControllerIntegrationTest extends AbstractControllerIntegrationTest {
         MockMultipartFile cover = new MockMultipartFile("coverImage", "cover.jpg",
                 MediaType.IMAGE_JPEG_VALUE, "dummy image content".getBytes());
 
-        mockMvc.perform(multipart("/api/books")
+        mockMvc.perform(multipart("/books")
                         .file(pdf)
                         .file(cover)
                         .param("isbn", "9780132350884")
@@ -184,7 +184,7 @@ class BookControllerIntegrationTest extends AbstractControllerIntegrationTest {
         MockMultipartFile cover = new MockMultipartFile("coverImage", "cover.jpg",
                 MediaType.IMAGE_JPEG_VALUE, "dummy image content".getBytes());
 
-        mockMvc.perform(multipart("/api/books")
+        mockMvc.perform(multipart("/books")
                         .file(pdf)
                         .file(cover)
                         .param("isbn", "9780132350884")
@@ -206,7 +206,7 @@ class BookControllerIntegrationTest extends AbstractControllerIntegrationTest {
         MockMultipartFile cover = new MockMultipartFile("coverImage", "cover.jpg",
                 MediaType.IMAGE_JPEG_VALUE, "dummy image content".getBytes());
 
-        mockMvc.perform(multipart("/api/books")
+        mockMvc.perform(multipart("/books")
                         .file(pdf)
                         .file(cover)
                         .param("isbn", "")
@@ -226,7 +226,7 @@ class BookControllerIntegrationTest extends AbstractControllerIntegrationTest {
 
     @Test
     void shouldReturn404_whenBookNotFoundForDelete() throws Exception {
-        performRequest(HttpMethod.GET, "/api/books/{isbn}", null, "LIBRARIAN",
+        performRequest(HttpMethod.GET, "/books/{isbn}", null, "LIBRARIAN",
                 "9999999999999")
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error.message").value("Book not found"))
@@ -239,7 +239,7 @@ class BookControllerIntegrationTest extends AbstractControllerIntegrationTest {
     void shouldDeleteBook_whenUserIsLibrarian() throws Exception {
         String isbn = "9780747532699";
 
-        performRequest(HttpMethod.DELETE, "/api/books/{isbn}", null, "LIBRARIAN", isbn)
+        performRequest(HttpMethod.DELETE, "/books/{isbn}", null, "LIBRARIAN", isbn)
                 .andExpect(status().isNoContent());
 
         Book deleted = em.find(Book.class, isbn);
@@ -250,7 +250,7 @@ class BookControllerIntegrationTest extends AbstractControllerIntegrationTest {
     void shouldReturn404_whenBookNotFoundForUpdate() throws Exception {
         BookUpdateDto dto = new BookUpdateDto("Test", 1990, 30,
                 1, 1, 1);
-        performRequest(HttpMethod.PUT, "/api/books/{isbn}", dto, "LIBRARIAN",
+        performRequest(HttpMethod.PUT, "/books/{isbn}", dto, "LIBRARIAN",
                 "9999999999999")
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error.message").value("Book not found"))
@@ -264,7 +264,7 @@ class BookControllerIntegrationTest extends AbstractControllerIntegrationTest {
         BookUpdateDto dto = new BookUpdateDto(null, 0, 30,
                 1, 1, 1);
 
-        performRequest(HttpMethod.PUT, "/api/books/{isbn}", dto, "LIBRARIAN",
+        performRequest(HttpMethod.PUT, "/books/{isbn}", dto, "LIBRARIAN",
                 "9780747532699")
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.data").isEmpty())
@@ -278,7 +278,7 @@ class BookControllerIntegrationTest extends AbstractControllerIntegrationTest {
         BookUpdateDto dto = new BookUpdateDto("Test", 1990, 20,
                 1, 1, 1);
 
-        performRequest(HttpMethod.PUT, "/api/books/{isbn}", dto, "LIBRARIAN",
+        performRequest(HttpMethod.PUT, "/books/{isbn}", dto, "LIBRARIAN",
                 "9780747532699")
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.title").value("Test"))

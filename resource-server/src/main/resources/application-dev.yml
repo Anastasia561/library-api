@@ -13,3 +13,8 @@ app:
   aws:
     s3:
       bucket: ${AWS_S3_BUCKET}
+
+openapi:
+  resource-server-url: ${DEV_RESOURCE_SERVER_URL}
+  auth-server-url: ${DEV_AUTH_SERVER_URL}
+  server-description: Development server

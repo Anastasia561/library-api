@@ -1,7 +1,10 @@
 package pl.edu.resourceserver.book.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -26,40 +29,47 @@ import pl.edu.resourceserver.wrapper.ResponseWrapper;
 
 import java.net.URL;
 
-@RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/books")
+@RequiredArgsConstructor
+@RequestMapping("/books")
+@Tag(name = "Books", description = "Endpoints for managing books")
 public class BookController {
     private final BookService bookService;
 
+    @Operation(summary = "Get a page of books preview information")
     @GetMapping
-    public ResponseWrapper<Page<BookPreviewResponseDto>> getBooks(Pageable pageable) {
+    public ResponseWrapper<Page<BookPreviewResponseDto>> getBooks(@ParameterObject Pageable pageable) {
         return ResponseWrapper.ok(bookService.getAllPreview(pageable));
     }
 
+    @Operation(summary = "Get book preview information by ISBN")
     @GetMapping("/{isbn}")
     public ResponseWrapper<BookPreviewResponseDto> getBookByIsbn(@PathVariable(name = "isbn") String isbn) {
         return ResponseWrapper.ok(bookService.getByIsbn(isbn));
     }
 
+    @Operation(summary = "Get book download url for full book version")
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/{isbn}/download/full")
     public ResponseWrapper<URL> getFullDownloadUrl(@PathVariable(name = "isbn") String isbn) {
         return ResponseWrapper.ok(bookService.getDownloadUrl(isbn, true));
     }
 
+    @Operation(summary = "Get book download url for preview book version")
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/{isbn}/download/preview")
     public ResponseWrapper<URL> getPreviewDownloadUrl(@PathVariable(name = "isbn") String isbn) {
         return ResponseWrapper.ok(bookService.getDownloadUrl(isbn, false));
     }
 
+    @Operation(summary = "Get a page of books full information")
     @PreAuthorize("hasRole('LIBRARIAN')")
     @GetMapping("/info")
-    public ResponseWrapper<Page<BookFullViewResponseDto>> getBooksInfo(Pageable pageable) {
+    public ResponseWrapper<Page<BookFullViewResponseDto>> getBooksInfo(@ParameterObject Pageable pageable) {
         return ResponseWrapper.ok(bookService.getAllFullView(pageable));
     }
 
+    @Operation(summary = "Upload a new book")
     @PreAuthorize("hasRole('LIBRARIAN')")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -67,6 +77,7 @@ public class BookController {
         return ResponseWrapper.withStatus(HttpStatus.CREATED, bookService.save(dto));
     }
 
+    @Operation(summary = "Delete book by ISBN")
     @PreAuthorize("hasRole('LIBRARIAN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{isbn}")
@@ -74,6 +85,7 @@ public class BookController {
         bookService.delete(isbn);
     }
 
+    @Operation(summary = "Update book by ISBN")
     @PreAuthorize("hasRole('LIBRARIAN')")
     @PutMapping(path = "/{isbn}")
     public ResponseWrapper<BookPreviewResponseDto> update(@PathVariable(name = "isbn") String isbn,

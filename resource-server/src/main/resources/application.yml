@@ -22,3 +22,12 @@ app:
       cover-key: "/cover.png"
       preview-key: "/preview.pdf"
       url-duration-min: 5
+
+server:
+  servlet:
+    context-path: /api
+
+springdoc:
+  swagger-ui:
+    oauth:
+      use-pkce-with-authorization-code-grant: true

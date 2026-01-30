@@ -20,12 +20,13 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
+    @Column(name = "title", length = 50, nullable = false)
     private String title;
-    @Column(nullable = false, unique = true)
+    @Column(name = "isbn", length = 13, nullable = false, unique = true)
     private String isbn;
     @Column(name = "year", nullable = false)
     private int publicationYear;
+    @Column(name = "pages")
     private Integer pages;
     @ManyToOne
     @JoinColumn(name = "author_id", nullable = false)
