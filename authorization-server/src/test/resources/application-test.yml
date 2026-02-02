@@ -10,6 +10,7 @@ spring:
   sql:
     init:
       mode: always
+      schema-locations: file:./db/01_schema.sql
 
 app:
   security:
