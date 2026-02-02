@@ -30,7 +30,9 @@
 - **Storage:** AWS S3 (book files & previews)
 - **Lambda** Python 3.12 + PyPDF2 (for preview generation)
 - **Security:** OAuth2 + JWT
-- **Build Tool:** Maven 
+- **Testing:** JUnit 5, Mockito, Testcontainers, LocalStack
+- **Documentation:** Swagger UI (OpenAPI 3.0)
+- **Build Tool:** Maven
 
 ---
 
