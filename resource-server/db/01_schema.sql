@@ -1,4 +1,3 @@
--- Table: author
 CREATE TABLE author
 (
     id         bigint      NOT NULL AUTO_INCREMENT,

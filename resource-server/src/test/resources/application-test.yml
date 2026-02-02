@@ -1,7 +1,7 @@
 testcontainers:
   reuse.enable: true
   mysql:
-    image: mysql:8.0.33
+    image: mysql:8.0.33 #mariadb:11-alpine
     username: ${TEST_USER}
     password: ${TEST_PASSWORD}
     database: ${TEST_DB}
@@ -10,6 +10,7 @@ spring:
   sql:
     init:
       mode: always
+      schema-locations: file:./db/01_schema.sql
 
   cloud:
     aws:

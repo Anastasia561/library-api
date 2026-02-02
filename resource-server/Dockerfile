@@ -1,5 +1,18 @@
-FROM eclipse-temurin:21-jre
-RUN mkdir "/opt/library"
-COPY "target/resource-server-0.0.1-SNAPSHOT.jar" "/opt/library/resource-server.jar"
-CMD ["java", "-jar", "/opt/library/resource-server.jar"]
+FROM eclipse-temurin:25-alpine AS builder
+WORKDIR /app
+
+COPY .mvn/ .mvn
+COPY mvnw pom.xml ./
+RUN chmod +x mvnw && ./mvnw dependency:go-offline
+
+COPY src ./src
+RUN ./mvnw clean package -DskipTests
+
+FROM eclipse-temurin:25-alpine
+WORKDIR /app
+
 EXPOSE 8080
+
+COPY --from=builder /app/target/*.jar /app/app.jar
+
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]

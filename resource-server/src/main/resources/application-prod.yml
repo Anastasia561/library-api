@@ -1,6 +1,6 @@
 openapi:
   server-description: Production server
-  resource-server-url: ${RESOURCE_SERVER_URL}
+  resource-server-url: "/api"
   auth-server-url: ${AUTH_SERVER_URL}
 
 spring:
