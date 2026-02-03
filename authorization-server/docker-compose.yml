@@ -1,3 +1,9 @@
+networks:
+  auth-private:
+    driver: bridge
+  backend-network:
+    external: true
+
 services:
   mysql:
     image: mysql:8.0.33
@@ -12,6 +18,8 @@ services:
       - ./db:/docker-entrypoint-initdb.d
     ports:
       - "3307:3306"
+    networks:
+      - auth-private
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
       interval: 5s
@@ -28,10 +36,11 @@ services:
       - SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
       - ALLOWED_ORIGIN=${ALLOWED_ORIGIN}
-#    volumes:
-#      - ~/.aws:/root/.aws:ro
     ports:
       - "9000:9000"
+    networks:
+      - backend-network
+      - auth-private
     depends_on:
       mysql:
         condition: service_healthy
