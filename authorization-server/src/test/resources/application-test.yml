@@ -1,5 +1,4 @@
 testcontainers:
-  reuse.enable: true
   mysql:
     image: mysql:8.0.33
     username: ${TEST_USER}
