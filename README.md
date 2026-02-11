@@ -33,6 +33,7 @@
 - **Testing:** JUnit 5, Mockito, Testcontainers, LocalStack
 - **Documentation:** Swagger UI (OpenAPI 3.0)
 - **Build Tool:** Maven
+- **Containerization:** Docker
 
 ---
 
